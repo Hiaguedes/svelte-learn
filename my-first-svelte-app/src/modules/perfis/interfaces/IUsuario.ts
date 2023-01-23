@@ -1,3 +1,5 @@
+import type IRepo from "./IRepos";
+
 export default interface IUsuario {
     login: string;
     avatar_url: string;
@@ -5,4 +7,5 @@ export default interface IUsuario {
     nome: string | null;
     repositorios_publicos: number;
     seguidores: number;
+    repos_recentes?: IRepo[]
 }

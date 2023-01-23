@@ -1,42 +1,76 @@
 <script lang="ts">
   import type IUsuario from "../interfaces/IUsuario";
-    import BarraSuperior from "./BarraSuperior.svelte";
-    export let usuario: IUsuario;
+  import BarraSuperior from "./BarraSuperior.svelte";
+  export let usuario: IUsuario;
+  $: HAS_REPOSITORIES = usuario.repos_recentes?.length // $ rotulo o codigo como reativo
 </script>
 
 <div class="card-usuario">
-    <BarraSuperior />
-    
-    <div class="usuario">
-      <div class="foto-container">
-        <a href="https://github.com/{usuario.login}" target="_blank" rel="noopener noreferrer">
-        <div 
-        style:background-image="url({usuario.avatar_url})"
-        class="foto-usuario" 
-         />
-        </a>
-      </div>
-      <div class="detalhes-usuario">
-        {#if usuario.nome}
+  <BarraSuperior />
+
+  <div class="usuario">
+    <div class="foto-container">
+      <a
+        href="https://github.com/{usuario.login}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <div
+          style:background-image="url({usuario.avatar_url})"
+          class="foto-usuario"
+        />
+      </a>
+    </div>
+    <div class="detalhes-usuario">
+      {#if usuario.nome}
         <div class="info">
           Nome: <span>{usuario.nome}</span>
         </div>
-        {/if}
-        <div class="info">
-          Usuario: <span>{usuario.login}</span>
-        </div>
-        <div class="info">
-          Seguidores: <span>{usuario.seguidores}</span>
-        </div>
-        <div class="info">
-          Repositorios: <span>{usuario.repositorios_publicos}</span>
-        </div>
+      {/if}
+      <div class="info">
+        Usuario: <span>{usuario.login}</span>
+      </div>
+      <div class="info">
+        Seguidores: <span>{usuario.seguidores}</span>
+      </div>
+      <div class="info">
+        Repositorios: <span>{usuario.repositorios_publicos}</span>
       </div>
     </div>
-  </div>
+    {#if usuario.repos_recentes && HAS_REPOSITORIES}
+    <div class="repositorios">
+      <h2 class="titulo">Repositorios Recentes</h2>
+        <ul>
+          {#each usuario.repos_recentes as repo}
+            <li>
+              <a
+                class="repositorio"
+                href={repo.url}
+                target="_blank"
+                rel="noopener noreferrer">{repo.nome}</a
+              >
+            </li>
+          {/each}
+        </ul>
+      </div>
+      {/if}
+    </div>
+</div>
 
-  <style>
-     .card-usuario {
+<style>
+  .repositorios > .titulo {
+    font-size: 20px;
+    line-height: 31px;
+    font-weight: 600;
+    color: #395278;
+  }
+  .repositorio {
+    font-size: 20px;
+    line-height: 31px;
+    color: #6781a8;
+    transition: color 0.2s;
+  }
+  .card-usuario {
     margin-top: 65px;
   }
 
@@ -77,4 +111,4 @@
     color: #6781a8;
     font-weight: normal;
   }
-  </style>
+</style>

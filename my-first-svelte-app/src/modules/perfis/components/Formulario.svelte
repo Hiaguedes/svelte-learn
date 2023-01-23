@@ -2,20 +2,31 @@
   import { createEventDispatcher } from "svelte";
   import type IUserGithub from "../interfaces/IUserGithub";
   import type IUsuario from "../interfaces/IUsuario";
+  import type IRepo from "../interfaces/IRepos";
+  import getUser from "../requests/getGithubUser";
+  import getRepos from "../requests/getRepos";
 
   let inputValue: string;
   let messageError: Boolean;
 
   const dispatch = createEventDispatcher<{
-    updateUser: IUsuario;
+    updateUser: IUsuario | null;
   }>();
 
   const onSubmit = async () => {
-    const res = await fetch(`https://api.github.com/users/${inputValue}`);
+    const res = await getUser(inputValue)
+    const repos = await getRepos(inputValue)
 
-    if (res.ok) {
+    if (res.ok && repos.ok) {
       messageError = false;
       const user: IUserGithub = await res.json();
+      const userRepos = await repos.json(); 
+      
+      const reposDTO: IRepo[] = userRepos.map(repo => ({
+        nome: repo?.name,
+        url: repo?.html_url,
+      }))
+
       dispatch("updateUser", {
         avatar_url: user.avatar_url,
         login: user.login,
@@ -23,6 +34,7 @@
         perfil_url: user.url,
         repositorios_publicos: user.public_repos,
         seguidores: user.followers,
+        repos_recentes: reposDTO,
       });
     } else {
       messageError = true;
