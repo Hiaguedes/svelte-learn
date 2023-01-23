@@ -1,11 +1,14 @@
 <script lang="ts">
-  import BarraSuperior from "./components/BarraSuperior.svelte";
-import Titulo from "./components/titulo.svelte";
-  let stringSearch: string;
+  import Titulo from "./components/titulo.svelte";
+  import type IUsuario from "./interfaces/IUsuario";
+  import Usuario from "./components/Usuario.svelte";
+  import Formulario from "./components/Formulario.svelte";
 
-  const onSubmit = (evt: Event) => {
-    console.log(stringSearch)
+  let usuario: IUsuario | null = null
 
+  const getUser = (evt: CustomEvent) => {
+    console.log('evento personalizado: ', evt)
+    usuario = evt.detail
   }
 
 </script>
@@ -13,41 +16,12 @@ import Titulo from "./components/titulo.svelte";
 <div class="app">
     <header>
         <Titulo titulo="Svelte Perfis" />
+        <Formulario on:updateUser={getUser} />
 
-        <div class="busca-usuario">
-          <form on:submit|preventDefault={evt => onSubmit(evt)}>
-            <input bind:value={stringSearch} type="text" class="input">
-            <div>
-              <button type="submit" class="botao">Buscar</button>
-            </div>
-          </form>
-        </div>
       </header>
-      <div class="card-usuario">
-        <BarraSuperior />
-        
-        <div class="usuario">
-          <div class="foto-container">
-            <a href="https://github.com/Hiaguedes" target="_blank" rel="noopener noreferrer">
-            <div class="foto-usuario">
-            </a>
-          </div>
-          <div class="detalhes-usuario">
-            <div class="info">
-              Nome: <span>Hiago Guedes</span>
-            </div>
-            <div class="info">
-              Usuario: <span>hiaguedes</span>
-            </div>
-            <div class="info">
-              Seguidores: <span>13</span>
-            </div>
-            <div class="info">
-              Repositorios: <span>53</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      {#if usuario}
+        <Usuario usuario={usuario}/>
+      {/if}
 </div>
 
 <style>
@@ -62,101 +36,4 @@ import Titulo from "./components/titulo.svelte";
   }
 
 
-
-  .busca-usuario {
-    position: relative;
-    width: 70%;
-  }
-
-  .input {
-    padding: 15px 25px;
-    width: calc(100% - 8.75rem);
-    font-size: 1rem;
-    border-radius: 8px;
-    border: 1px solid #2e80fa;
-    box-shadow: 0px 17px 52px rgba(222, 231, 247, 0.4);
-    outline: 0;
-  }
-
-  .input::placeholder {
-    font-family: "Roboto";
-    font-style: italic;
-    font-weight: 300;
-    font-size: 19.5px;
-    line-height: 26px;
-    color: #6e8cba;
-  }
-
-  .botao-container {
-    position: absolute;
-    width: 9.625rem;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    display: flex;
-  }
-
-  .botao {
-    padding: 15px 24px;
-    border-radius: 8px;
-    border: none;
-    background: #2e80fa;
-    line-height: 26px;
-    color: #fff;
-    font-size: 22px;
-    cursor: pointer;
-
-    transition: background-color 0.2s;
-
-    display: flex;
-    align-items: center;
-    gap: 13px;
-  }
-
-  .botao:hover {
-    background: #4590ff;
-  }
-
-  .card-usuario {
-    margin-top: 65px;
-  }
-
-  .usuario {
-    padding: 28px 0;
-    background: rgba(255, 255, 255, 0.5);
-    box-shadow: -12px 37px 45px rgba(133, 127, 201, 0.18);
-    border-radius: 0px 0px 13px 13px;
-
-    display: flex;
-    justify-content: center;
-  }
-
-  .foto-container {
-    margin-right: 81px;
-  }
-
-  .foto-usuario {
-    width: 12.75rem;
-    height: 12.75rem;
-    border: 4.56px solid #2e80fa;
-    border-radius: 50%;
-    background-size: cover;
-    background-image: url('https://github.com/Hiaguedes.png')
-  }
-
-  .detalhes-usuario {
-    margin-right: 55px;
-  }
-
-  .detalhes-usuario > .info {
-    font-weight: 600;
-    font-size: 20px;
-    line-height: 31px;
-    color: #395278;
-  }
-
-  .detalhes-usuario > .info > span {
-    color: #6781a8;
-    font-weight: normal;
-  }
 </style>
